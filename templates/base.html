@@ -8,10 +8,12 @@
 <body>
 <nav class="navbar navbar-expand navbar-dark bg-primary mb-3">
   <div class="container">
-    <a class="navbar-brand" href="{{ url_for('index') }}">Sistema de Vacinação</a>
+    <!-- Corrigido para apontar para o blueprint 'registros' -->
+    <a class="navbar-brand" href="{{ url_for('registros.index') }}">Sistema de Vacinação</a>
     <div>
-      <a class="btn btn-light btn-sm" href="{{ url_for('listar_pacientes') }}">Pacientes</a>
-      <a class="btn btn-light btn-sm" href="{{ url_for('listar_vacinas') }}">Vacinas</a>
+      <!-- Corrigidos para apontar para os endpoints dentro dos blueprints -->
+      <a class="btn btn-light btn-sm" href="{{ url_for('pacientes.listar_pacientes') }}">Pacientes</a>
+      <a class="btn btn-light btn-sm" href="{{ url_for('vacinas.listar_vacinas') }}">Vacinas</a>
     </div>
   </div>
 </nav>

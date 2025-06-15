@@ -2,7 +2,7 @@
 {% block title %}Editar Paciente{% endblock %}
 {% block content %}
 <h2>Editar Paciente</h2>
-<form method="POST">
+<form method="POST" action="{{ url_for('pacientes.editar_paciente', id=paciente.id) }}">
   <div class="mb-3">
     <label for="nome" class="form-label">Nome Completo</label>
     <input type="text" class="form-control" id="nome" name="nome" value="{{ paciente.nome }}" required>
@@ -25,6 +25,6 @@
   </div>
 
   <button type="submit" class="btn btn-success">Atualizar</button>
-  <a href="{{ url_for('listar_pacientes') }}" class="btn btn-secondary">Cancelar</a>
+  <a href="{{ url_for('pacientes.listar_pacientes') }}" class="btn btn-secondary">Cancelar</a>
 </form>
 {% endblock %}

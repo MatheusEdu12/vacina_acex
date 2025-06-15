@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Vacinas</h1>
 
-<a href="{{ url_for('nova_vacina') }}" class="btn btn-primary mb-3">Nova Vacina</a>
+<a href="{{ url_for('vacinas.nova_vacina') }}" class="btn btn-primary mb-3">Nova Vacina</a>
 
 <table class="table table-striped">
     <thead>
@@ -23,8 +23,8 @@
             <td>{{ vacina.tipo }}</td>
             <td>{{ vacina.fabricante }}</td>
             <td>
-                <a href="{{ url_for('editar_vacina', id=vacina.id) }}" class="btn btn-sm btn-warning">Editar</a>
-                <form action="{{ url_for('excluir_vacina', id=vacina.id) }}" method="post" style="display:inline-block" onsubmit="return confirm('Confirma exclusão da vacina?');">
+                <a href="{{ url_for('vacinas.editar_vacina', id=vacina.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                <form action="{{ url_for('vacinas.excluir_vacina', id=vacina.id) }}" method="post" style="display:inline-block" onsubmit="return confirm('Confirma exclusão da vacina?');">
                     <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
                 </form>
             </td>

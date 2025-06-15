@@ -19,7 +19,8 @@
       {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('index') }}">
+    <!-- Corrigido o endpoint da action para o blueprint registros -->
+    <form method="POST" action="{{ url_for('registros.index') }}">
       <div class="form-group">
         <label for="paciente_id">Paciente:</label>
         <select name="paciente_id" id="paciente_id" class="form-control" required>
