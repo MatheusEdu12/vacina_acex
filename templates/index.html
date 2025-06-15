@@ -7,17 +7,7 @@
   <div class="container">
     <h1 class="text-center">Registro de Vacinação</h1>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div>
-          {% for category, message in messages %}
-            <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+    
 
     <!-- Corrigido o endpoint da action para o blueprint registros -->
     <form method="POST" action="{{ url_for('registros.index') }}">
