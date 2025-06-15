@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from config import Config
-from models import db, Paciente, Vacina
+from models import db, Paciente, Vacina, PacienteVacina
 from datetime import datetime
 import re
 import click
@@ -20,10 +20,43 @@ def create_tables():
 def validar_cpf(cpf):
     return bool(re.fullmatch(r'\d{11}', cpf))
 
-@app.route('/')
+# ----------------- Registro de Vacinas no index -----------------
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    pacientes = Paciente.query.all()
     vacinas = Vacina.query.all()
-    return render_template('index.html', vacinas=vacinas)
+    registros = PacienteVacina.query.all()
+
+    if request.method == 'POST':
+        paciente_id = request.form.get('paciente_id')
+        vacina_id = request.form.get('vacina_id')
+        data_dose = request.form.get('data_dose')
+        lote = request.form.get('lote')
+        local_aplicacao = request.form.get('local_aplicacao')
+
+        if not paciente_id or not vacina_id or not data_dose:
+            flash("Preencha paciente, vacina e data da dose", "error")
+        else:
+            try:
+                data_dose_date = datetime.strptime(data_dose, '%Y-%m-%d')
+                registro = PacienteVacina(
+                    paciente_id=int(paciente_id),
+                    vacina_id=int(vacina_id),
+                    data_dose=data_dose_date,
+                    lote=lote,
+                    local_aplicacao=local_aplicacao
+                )
+                db.session.add(registro)
+                db.session.commit()
+                flash("Registro criado com sucesso", "success")
+                return redirect(url_for('index'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f"Erro ao salvar registro: {str(e)}", "error")
+
+    return render_template('index.html', pacientes=pacientes, vacinas=vacinas, registros=registros)
+
 
 # ----------------- CRUD Paciente -----------------
 
@@ -98,32 +131,25 @@ def excluir_paciente(id):
         flash(f'Erro ao excluir paciente: {str(e)}', 'error')
     return redirect(url_for('listar_pacientes'))
 
+
 # ----------------- CRUD Vacina -----------------
 
 @app.route('/vacinas')
 def listar_vacinas():
-    vacinas = Vacina.query.join(Paciente).all()
+    vacinas = Vacina.query.all()
     return render_template('vacinas/listar.html', vacinas=vacinas)
 
 @app.route('/vacinas/novo', methods=['GET', 'POST'])
 def nova_vacina():
-    pacientes = Paciente.query.all()
     if request.method == 'POST':
         tipo = request.form['tipo'].strip()
         fabricante = request.form['fabricante'].strip()
-        data_dose = request.form['data_dose']
-        lote = request.form['lote'].strip()
-        local_aplicacao = request.form['local_aplicacao'].strip()
-        paciente_id = request.form.get('paciente_id')
 
-        if not tipo or not fabricante or not data_dose or not lote or not local_aplicacao or not paciente_id:
+        if not tipo or not fabricante:
             flash('Preencha todos os campos.', 'error')
         else:
             try:
-                data_dose_date = datetime.strptime(data_dose, '%Y-%m-%d')
-                vacina = Vacina(tipo=tipo, fabricante=fabricante, data_dose=data_dose_date,
-                                lote=lote, local_aplicacao=local_aplicacao,
-                                paciente_id=int(paciente_id))
+                vacina = Vacina(tipo=tipo, fabricante=fabricante)
                 db.session.add(vacina)
                 db.session.commit()
                 return redirect(url_for('listar_vacinas'))
@@ -131,33 +157,26 @@ def nova_vacina():
                 db.session.rollback()
                 flash(f'Erro ao salvar vacina: {str(e)}', 'error')
 
-    return render_template('vacinas/novo.html', pacientes=pacientes)
+    return render_template('vacinas/novo.html')
 
 @app.route('/vacinas/<int:id>/editar', methods=['GET', 'POST'])
 def editar_vacina(id):
     vacina = Vacina.query.get_or_404(id)
-    pacientes = Paciente.query.all()
     if request.method == 'POST':
         vacina.tipo = request.form['tipo'].strip()
         vacina.fabricante = request.form['fabricante'].strip()
-        data_dose = request.form['data_dose']
-        vacina.lote = request.form['lote'].strip()
-        vacina.local_aplicacao = request.form['local_aplicacao'].strip()
-        paciente_id = request.form.get('paciente_id')
 
-        if not vacina.tipo or not vacina.fabricante or not data_dose or not vacina.lote or not vacina.local_aplicacao or not paciente_id:
+        if not vacina.tipo or not vacina.fabricante:
             flash('Preencha todos os campos.', 'error')
         else:
             try:
-                vacina.data_dose = datetime.strptime(data_dose, '%Y-%m-%d')
-                vacina.paciente_id = int(paciente_id)
                 db.session.commit()
                 return redirect(url_for('listar_vacinas'))
             except Exception as e:
                 db.session.rollback()
                 flash(f'Erro ao editar vacina: {str(e)}', 'error')
 
-    return render_template('vacinas/editar.html', vacina=vacina, pacientes=pacientes)
+    return render_template('vacinas/editar.html', vacina=vacina)
 
 @app.route('/vacinas/<int:id>/excluir', methods=['POST'])
 def excluir_vacina(id):

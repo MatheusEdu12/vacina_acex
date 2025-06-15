@@ -1,11 +1,91 @@
 {# templates/index.html #}
 {% extends "base.html" %}
 
-{% block title %}Página Inicial{% endblock %}
+{% block title %}Sistema de Vacinação{% endblock %}
 
 {% block content %}
-  <div class="text-center">
-    <h1>Bem-vindo ao Sistema de Vacinação</h1>
-    <p>Use o menu acima para navegar entre os pacientes e vacinas.</p>
+  <div class="container">
+    <h1 class="text-center">Registro de Vacinação</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div>
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('index') }}">
+      <div class="form-group">
+        <label for="paciente_id">Paciente:</label>
+        <select name="paciente_id" id="paciente_id" class="form-control" required>
+          <option value="">Selecione um paciente</option>
+          {% for paciente in pacientes %}
+            <option value="{{ paciente.id }}">{{ paciente.nome }} - CPF: {{ paciente.cpf }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="vacina_id">Vacina:</label>
+        <select name="vacina_id" id="vacina_id" class="form-control" required>
+          <option value="">Selecione uma vacina</option>
+          {% for vacina in vacinas %}
+            <option value="{{ vacina.id }}">{{ vacina.tipo }} - {{ vacina.fabricante }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="data_dose">Data da Dose:</label>
+        <input type="date" id="data_dose" name="data_dose" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="lote">Lote:</label>
+        <input type="text" id="lote" name="lote" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="local_aplicacao">Local da Aplicação:</label>
+        <input type="text" id="local_aplicacao" name="local_aplicacao" class="form-control">
+      </div>
+
+      <button type="submit" class="btn btn-primary mt-2">Registrar Vacina</button>
+    </form>
+
+    <hr>
+
+    <h2 class="mt-4">Registros</h2>
+    {% if registros %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Vacina</th>
+            <th>Data da Dose</th>
+            <th>Lote</th>
+            <th>Local da Aplicação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for registro in registros %}
+            <tr>
+              <td>{{ registro.paciente.nome }}</td>
+              <td>{{ registro.vacina.tipo }} - {{ registro.vacina.fabricante }}</td>
+              <td>{{ registro.data_dose.strftime('%d/%m/%Y') }}</td>
+              <td>{{ registro.lote or '-' }}</td>
+              <td>{{ registro.local_aplicacao or '-' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Nenhum registro encontrado.</p>
+    {% endif %}
   </div>
 {% endblock %}
