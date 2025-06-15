@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Editar Vacina - Sistema de Vacinação{% endblock %}
+{% block content %}
+<h2>Editar Vacina</h2>
+<form method="POST">
+  <div class="mb-3">
+    <label for="tipo" class="form-label">Tipo</label>
+    <input type="text" class="form-control" id="tipo" name="tipo" value="{{ vacina.tipo }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="fabricante" class="form-label">Fabricante</label>
+    <input type="text" class="form-control" id="fabricante" name="fabricante" value="{{ vacina.fabricante }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="data_dose" class="form-label">Data da Dose</label>
+    <input type="date" class="form-control" id="data_dose" name="data_dose" value="{{ vacina.data_dose.strftime('%Y-%m-%d') }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="lote" class="form-label">Lote</label>
+    <input type="text" class="form-control" id="lote" name="lote" value="{{ vacina.lote }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="local_aplicacao" class="form-label">Local da Aplicação</label>
+    <input type="text" class="form-control" id="local_aplicacao" name="local_aplicacao" value="{{ vacina.local_aplicacao }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="paciente_id" class="form-label">Paciente</label>
+    <select class="form-select" id="paciente_id" name="paciente_id" required>
+      <option value="">-- Selecione --</option>
+      {% for paciente in pacientes %}
+        <option value="{{ paciente.id }}" {% if paciente.id == vacina.paciente_id %}selected{% endif %}>
+          {{ paciente.nome }} - CPF: {{ paciente.cpf }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-success">Atualizar</button>
+  <a href="{{ url_for('listar_vacinas') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

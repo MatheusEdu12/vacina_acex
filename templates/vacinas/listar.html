@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Vacinas - Sistema de Vacinação{% endblock %}
+{% block content %}
+<h2>Vacinas</h2>
+<a href="{{ url_for('nova_vacina') }}" class="btn btn-primary mb-3">Nova Vacina</a>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>Fabricante</th>
+      <th>Data da Dose</th>
+      <th>Lote</th>
+      <th>Local da Aplicação</th>
+      <th>Paciente</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for vacina in vacinas %}
+    <tr>
+      <td>{{ vacina.tipo }}</td>
+      <td>{{ vacina.fabricante }}</td>
+      <td>{{ vacina.data_dose.strftime('%d/%m/%Y') }}</td>
+      <td>{{ vacina.lote }}</td>
+      <td>{{ vacina.local_aplicacao }}</td>
+      <td>{{ vacina.paciente.nome }}</td>
+      <td>
+        <a href="{{ url_for('editar_vacina', id=vacina.id) }}" class="btn btn-sm btn-warning">Editar</a>
+        <form action="{{ url_for('excluir_vacina', id=vacina.id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Confirma exclusão?');">
+          <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="text-center">Nenhuma vacina cadastrada.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
