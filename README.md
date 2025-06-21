@@ -97,3 +97,7 @@ vacina_acex/
 
 ## 📝 Licença
 Este projeto é livre para uso acadêmico e educacional.
+
+## Manual do usuário
+```bash
+https://drive.google.com/file/d/1lJQE3OjXwY96zEwAD_c5-E0vdMC0sZ2M/view?usp=sharing
