@@ -76,7 +76,7 @@ pip install cryptography
 ```
 ### 6. Rode a aplicação
 ```bash
-python app.py
+flask run --host=127.0.0.1 --port=5001
 ```
 Acesse em http://127.0.0.1:5000
 
