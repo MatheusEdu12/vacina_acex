@@ -70,6 +70,10 @@ SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://flaskuser:123456@localhost/vacinadb'
 ```bash
 flask create-tables
 ```
+OBS: Caso seja necessário, instale o package cryptography
+```bash
+pip install cryptography
+```
 ### 6. Rode a aplicação
 ```bash
 python app.py
